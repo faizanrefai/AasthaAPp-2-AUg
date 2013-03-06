@@ -18,10 +18,10 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = NSLocalizedString(@"Master", @"Master");
+        self.title = NSLocalizedString(@"City", @"City");
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            self.clearsSelectionOnViewWillAppear = NO;
-            self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
+         //   self.clearsSelectionOnViewWillAppear = NO;
+          //  self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
         }
     }
     return self;
@@ -45,8 +45,11 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    arrList=[[NSMutableArray alloc]initWithObjects:@"Ahmedabad",@"Surat",@"Vadordara",@"Bhujj", nil];
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+     //   [self.tableView selectRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0] animated:NO scrollPosition:UITableViewScrollPositionMiddle];
     }
 }
 
@@ -80,11 +83,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-    } else {
-        return YES;
-    }
+    return NO;
 }
 
 // Customize the number of sections in the table view.
@@ -95,7 +94,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 1;
+    return [arrList count];
 }
 
 // Customize the appearance of table view cells.
@@ -112,7 +111,9 @@
     }
 
     // Configure the cell.
-    cell.textLabel.text = NSLocalizedString(@"Detail", @"Detail");
+    cell.textLabel.text = [arrList objectAtIndex:indexPath.row];
+    
+    
     return cell;
 }
 
@@ -156,12 +157,15 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-	    if (!self.detailViewController) {
-	        self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
-	    }
-        [self.navigationController pushViewController:self.detailViewController animated:YES];
-    }
+   FinalView *objFInal = [[[FinalView alloc] initWithNibName:@"FinalView" bundle:nil] autorelease];
+       [self.navigationController pushViewController:objFInal animated:YES];   
+    
+//    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+//	    if (!self.detailViewController) {
+//	        self.detailViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
+//	    }
+//        [self.navigationController pushViewController:self.detailViewController animated:YES];
+//    }
 }
 
 @end

@@ -11,12 +11,14 @@
 #import "MasterViewController.h"
 
 #import "DetailViewController.h"
-
+#import "FinalView.h"
+#import "USD.h"
 @implementation AppDelegate
 
 @synthesize window = _window;
 @synthesize navigationController = _navigationController;
 @synthesize splitViewController = _splitViewController;
+@synthesize strSelect;
 
 - (void)dealloc
 {
@@ -29,12 +31,31 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+  
+//    [[NSUserDefaults standardUserDefaults] setValue:@"14" forKey:@"LoginID"];
+//    [[NSUserDefaults standardUserDefaults]synchronize];
+    
+    
     // Override point for customization after application launch.
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        MasterViewController *masterViewController = [[[MasterViewController alloc] initWithNibName:@"MasterViewController_iPhone" bundle:nil] autorelease];
-        self.navigationController = [[[UINavigationController alloc] initWithRootViewController:masterViewController] autorelease];
+        NSString *strId=[[NSUserDefaults standardUserDefaults]valueForKey:@"LoginID"];
+       
+        if([strId isEqualToString:@""]||[strId isEqualToString:@"(null)"]||strId==nil){
+            DetailViewController *masterViewController = [[[DetailViewController alloc] initWithNibName:@"DetailViewController_iPhone" bundle:nil] autorelease];
+            self.navigationController = [[[UINavigationController alloc] initWithRootViewController:masterViewController] autorelease];
+            
+        }
+        else{
+            self.strSelect=@"Direct";
+
+            FinalView *masterViewController = [[[FinalView alloc] initWithNibName:@"FinalView" bundle:nil] autorelease];
+            self.navigationController = [[[UINavigationController alloc] initWithRootViewController:masterViewController] autorelease];
+            
+        
+        }
         self.window.rootViewController = self.navigationController;
-    } else {
+    } 
+    else {
         MasterViewController *masterViewController = [[[MasterViewController alloc] initWithNibName:@"MasterViewController_iPad" bundle:nil] autorelease];
         UINavigationController *masterNavigationController = [[[UINavigationController alloc] initWithRootViewController:masterViewController] autorelease];
         
@@ -47,8 +68,53 @@
         
         self.window.rootViewController = self.splitViewController;
     }
+    [self Rechability1];
+    
+
+    
     [self.window makeKeyAndVisible];
     return YES;
+}
+-(void)Rechability1{
+
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+                                             selector:@selector(reachabilityChanged:) 
+                                                 name:kReachabilityChangedNotification 
+                                               object:nil];
+    Reachability * reach = [Reachability reachabilityWithHostname:@"www.google.com"];
+    
+    reach.reachableBlock = ^(Reachability * reachability)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //  NSString *str = @"Block Says Reachable";
+        });
+    };
+    
+    reach.unreachableBlock = ^(Reachability * reachability)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //  NSString *str = @"Block Says Unreachable";
+        });
+    };
+    
+    [reach startNotifier];
+
+}
+-(void)reachabilityChanged:(NSNotification*)note
+{
+    Reachability * reach = [note object];
+    
+    if([reach isReachable])
+    {
+        //    NSString *str1 = @"Notification Says Reachable";
+    }
+    else
+    {
+        //     NSString *str1  = @"Notification Says Unreachable";
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Aastha" message:@"Internet Connection not available currently. Please check your internet connectivity and try again after sometime." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
+        //  [alert release];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
